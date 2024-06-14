@@ -1,0 +1,5 @@
+node_modules/
+graphData.json
+location.json
+.env
+practise/
