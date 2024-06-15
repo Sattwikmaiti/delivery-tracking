@@ -67,15 +67,17 @@ function App() {
     const sendOnRoadStream = async () => {
        
         try {
+
           if(city[currentPositionIndex])
            { 
+            
 
             console.log(`Publishing : ${city[currentPositionIndex]}`)
             await axios.post("http://localhost:8000/onroad-stream", {
             userId: "Sattwik",
             agentId: "Raju",
             orderId: "Sattwik-order-1",
-            deliveryId: "sattwik-del-591",
+            deliveryId: "sattwik-del-3091",
             pickupLocation: {
               location: "Mumbai"
             },
@@ -85,12 +87,12 @@ function App() {
           });
 
 
+          
           if(city[currentPositionIndex]==="Mumbai")
-              {
-                alert("Your Parcel Has Arrived.Click ok to Pick Up Successfully")
-              }
-
-        
+            {
+              
+              await axios.post(`http://localhost:8000/sendmail/sattwik-del-3091`);
+            }
           console.log(`Published : ${city[currentPositionIndex]}`)
           console.log("city", city[currentPositionIndex]);}
         } catch (error) {

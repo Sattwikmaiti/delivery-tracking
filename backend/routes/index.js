@@ -3,6 +3,7 @@ const shippingPublisher = require('../publishers/shippingPublisher');
 const onroadPublisher = require('../publishers/onroadPublisher');
 const deliveredPublisher = require('../publishers/deliveredPublisher');
 const path=require('../publishers/path.js')
+const nodemailer=require('nodemailer')
 const router = Router();
 
 const Delhivery=require('../model/Delhivery')
@@ -189,16 +190,89 @@ router.post('/onroad-stream',async(req,res,next)=>{
     const message = { deliveryId:data.deliveryId,userId:data.userId,orderId:data.orderId,pickupLocation:data.pickupLocation,currentLocation:data.currentLocation, status: 'onroad' };
    await onroadPublisher(message);
     
-   if(message.pickupLocation.location===message.currentLocation.stateCapital)
-       {
-         
-    const messageShip = { deliveryId:data.deliveryId,userId:data.userId,orderId:data.orderId,pickupLocation:data.pickupLocation,currentLocation:data.currentLocation, status: 'delivered' };
-    
-        await deliveredPublisher(messageShip)
-      
-      }
-
+ 
    res.send('onroad');
+
+
+  }catch(err)
+  {
+    next(err)
+
+  }
+
+})
+
+
+
+
+const sendVerificationEmail = async (id) => {
+  // Create a Nodemailer transporter
+  const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+          user: "maitisattwik@gmail.com",
+          pass: "asiepkljrnykrrhw",
+      },
+  });
+
+  // Compose email message
+  const mailOptions = {
+      from: "no-reply@gmail.com",
+      to:'maitisattwik@gmail.com',
+      subject: "Your Order has Arrived The Doorstep",
+      text: `Please click the following link to accept the delivered item: http://localhost:8000/delivered-stream/${id} `,
+  };
+
+  // Send the email
+  try {
+      await transporter.sendMail(mailOptions);
+      console.log("Verification email sent successfully");
+  } catch (error) {
+      console.error("Error sending verification email:", error);
+  }
+};
+
+router.post('/sendmail/:id',async(req,res)=>{
+ 
+  try{
+    await sendVerificationEmail(req.params.id);
+    res.status(200).json("Send")
+    
+  }catch(err){
+    console.log(err)
+  }
+
+})
+
+router.get('/delivered-stream/:id',async(req,res,next)=>{
+
+  console.log("id",req.params.id)
+  try{
+   
+
+    // const data=req.body
+   
+     const message ={
+      userId: "Sattwik",
+      agentId: "Raju",
+      orderId: "Sattwik-order-1",
+      deliveryId: req.params.id,
+      pickupLocation: {
+        location: "Mumbai"
+      },
+      currentLocation: {
+        stateCapital: "Mumbai"
+      },
+      status: 'delivered'
+     }
+         
+    // const messageShip = { deliveryId:data.deliveryId,userId:data.userId,orderId:data.orderId,pickupLocation:data.pickupLocation,currentLocation:data.currentLocation, status: 'delivered' };
+    
+        await deliveredPublisher(message)
+      
+      
+
+   res.send('delivered');
 
 
   }catch(err)

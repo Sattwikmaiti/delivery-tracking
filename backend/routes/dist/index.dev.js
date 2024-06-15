@@ -11,6 +11,8 @@ var deliveredPublisher = require('../publishers/deliveredPublisher');
 
 var path = require('../publishers/path.js');
 
+var nodemailer = require('nodemailer');
+
 var router = Router();
 
 var Delhivery = require('../model/Delhivery');
@@ -367,7 +369,7 @@ router.get('/delivered/:name', function _callee11(req, res, next) {
   }, null, null, [[1, 7]]);
 });
 router.post('/onroad-stream', function _callee12(req, res, next) {
-  var data, message, messageShip;
+  var data, message;
   return regeneratorRuntime.async(function _callee12$(_context12) {
     while (1) {
       switch (_context12.prev = _context12.next) {
@@ -386,37 +388,134 @@ router.post('/onroad-stream', function _callee12(req, res, next) {
           return regeneratorRuntime.awrap(onroadPublisher(message));
 
         case 5:
-          if (!(message.pickupLocation.location === message.currentLocation.stateCapital)) {
-            _context12.next = 9;
-            break;
-          }
-
-          messageShip = {
-            deliveryId: data.deliveryId,
-            userId: data.userId,
-            orderId: data.orderId,
-            pickupLocation: data.pickupLocation,
-            currentLocation: data.currentLocation,
-            status: 'delivered'
-          };
-          _context12.next = 9;
-          return regeneratorRuntime.awrap(deliveredPublisher(messageShip));
-
-        case 9:
           res.send('onroad');
-          _context12.next = 15;
+          _context12.next = 11;
           break;
 
-        case 12:
-          _context12.prev = 12;
+        case 8:
+          _context12.prev = 8;
           _context12.t0 = _context12["catch"](0);
           next(_context12.t0);
 
-        case 15:
+        case 11:
         case "end":
           return _context12.stop();
       }
     }
-  }, null, null, [[0, 12]]);
+  }, null, null, [[0, 8]]);
+});
+
+var sendVerificationEmail = function sendVerificationEmail(id) {
+  var transporter, mailOptions;
+  return regeneratorRuntime.async(function sendVerificationEmail$(_context13) {
+    while (1) {
+      switch (_context13.prev = _context13.next) {
+        case 0:
+          // Create a Nodemailer transporter
+          transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "maitisattwik@gmail.com",
+              pass: "asiepkljrnykrrhw"
+            }
+          }); // Compose email message
+
+          mailOptions = {
+            from: "no-reply@gmail.com",
+            to: 'maitisattwik@gmail.com',
+            subject: "Your Order has Arrived The Doorstep",
+            text: "Please click the following link to accept the delivered item: http://localhost:8000/delivered-stream/".concat(id, " ")
+          }; // Send the email
+
+          _context13.prev = 2;
+          _context13.next = 5;
+          return regeneratorRuntime.awrap(transporter.sendMail(mailOptions));
+
+        case 5:
+          console.log("Verification email sent successfully");
+          _context13.next = 11;
+          break;
+
+        case 8:
+          _context13.prev = 8;
+          _context13.t0 = _context13["catch"](2);
+          console.error("Error sending verification email:", _context13.t0);
+
+        case 11:
+        case "end":
+          return _context13.stop();
+      }
+    }
+  }, null, null, [[2, 8]]);
+};
+
+router.post('/sendmail/:id', function _callee13(req, res) {
+  return regeneratorRuntime.async(function _callee13$(_context14) {
+    while (1) {
+      switch (_context14.prev = _context14.next) {
+        case 0:
+          _context14.prev = 0;
+          _context14.next = 3;
+          return regeneratorRuntime.awrap(sendVerificationEmail(req.params.id));
+
+        case 3:
+          res.status(200).json("Send");
+          _context14.next = 9;
+          break;
+
+        case 6:
+          _context14.prev = 6;
+          _context14.t0 = _context14["catch"](0);
+          console.log(_context14.t0);
+
+        case 9:
+        case "end":
+          return _context14.stop();
+      }
+    }
+  }, null, null, [[0, 6]]);
+});
+router.get('/delivered-stream/:id', function _callee14(req, res, next) {
+  var message;
+  return regeneratorRuntime.async(function _callee14$(_context15) {
+    while (1) {
+      switch (_context15.prev = _context15.next) {
+        case 0:
+          console.log("id", req.params.id);
+          _context15.prev = 1;
+          // const data=req.body
+          message = {
+            userId: "Sattwik",
+            agentId: "Raju",
+            orderId: "Sattwik-order-1",
+            deliveryId: req.params.id,
+            pickupLocation: {
+              location: "Mumbai"
+            },
+            currentLocation: {
+              stateCapital: "Mumbai"
+            },
+            status: 'delivered'
+          }; // const messageShip = { deliveryId:data.deliveryId,userId:data.userId,orderId:data.orderId,pickupLocation:data.pickupLocation,currentLocation:data.currentLocation, status: 'delivered' };
+
+          _context15.next = 5;
+          return regeneratorRuntime.awrap(deliveredPublisher(message));
+
+        case 5:
+          res.send('delivered');
+          _context15.next = 11;
+          break;
+
+        case 8:
+          _context15.prev = 8;
+          _context15.t0 = _context15["catch"](1);
+          next(_context15.t0);
+
+        case 11:
+        case "end":
+          return _context15.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
 });
 module.exports = router;
