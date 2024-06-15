@@ -8,17 +8,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 // Fetch the preprocessed graph data pickuplocation = Lucknow , current=Mumbai
 // import fs from 'fs'
-var fs = require('fs');
-
-var fetch = require('node-fetch');
-
 var source = "Mumbai";
 var destination = "Kolkata";
 fetch("graphData.json").then(function (response) {
   return response.json();
 }).then(function (data) {
   var graph = data.graph;
-  var cityIndex = data.cityIndex; // Read the JSON file (this is now embedded)
+  console.log(graph); // Read the JSON file (this is now embedded)
 
   var mapping = {};
   fetch("location.json").then(function (response) {
@@ -141,15 +137,7 @@ fetch("graphData.json").then(function (response) {
     var path = getPath(source, destination, predecessors);
     var coordinates = path.map(function (city) {
       return [mapping[city].lat, mapping[city]["long"]];
-    }); // Write the coordinates to a file
-
-    fs.writeFile('coordinates.json', JSON.stringify(coordinates, null, 2), function (err) {
-      if (err) {
-        console.error('Error writing coordinates to file:', err);
-      } else {
-        console.log('Coordinates saved to coordinates.json');
-      }
-    }); // No need for map initialization and plotting since it's not used in this script
+    });
   });
 }); // const fs = require('fs'); // Import the fs module for file operations
 // const val = true;

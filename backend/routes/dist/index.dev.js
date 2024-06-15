@@ -9,6 +9,8 @@ var onroadPublisher = require('../publishers/onroadPublisher');
 
 var deliveredPublisher = require('../publishers/deliveredPublisher');
 
+var path = require('../publishers/path.js');
+
 var router = Router();
 
 var Delhivery = require('../model/Delhivery');
@@ -47,11 +49,10 @@ router.post('/order', function _callee2(req, res) {
             userId: req.body.userId,
             orderId: req.body.orderId,
             pickupLocation: {
-              location: req.body.pickupLocation.location,
-              coordinates: {
-                latitude: req.body.pickupLocation.coordinates.lat,
-                longitude: req.body.pickupLocation.coordinates["long"]
-              }
+              location: req.body.pickupLocation.location
+            },
+            currentLocation: {
+              stateCapital: req.body.currentLocation.stateCapital
             }
           });
           _context2.next = 4;
@@ -97,11 +98,7 @@ router.post('/addAgent', function _callee4(req, res) {
           newDelhivery = new DelhiveryAgent({
             agentId: req.body.agentId,
             operatingLocation: {
-              location: req.body.location,
-              coordinates: {
-                latitude: req.body.lat,
-                longitude: req.body["long"]
-              }
+              location: req.body.location
             }
           });
           _context4.next = 4;
@@ -221,18 +218,10 @@ router.post('/log', function _callee7(req, res) {
             deliveryId: deliveryId,
             //same as given in Delhivery.js
             currentLocation: {
-              stateCapital: currentLocation.stateCapital,
-              coordinates: {
-                latitude: currentLocation.coordinates.lat,
-                longitude: currentLocation.coordinates["long"]
-              }
+              stateCapital: currentLocation.stateCapital
             },
             pickupLocation: {
-              location: pickupLocation.location,
-              coordinates: {
-                latitude: pickupLocation.coordinates.lat,
-                longitude: pickupLocation.coordinates["long"]
-              }
+              location: pickupLocation.location
             }
           });
           _context7.next = 7;
@@ -289,35 +278,39 @@ router.get('/shipping/:name', function _callee8(req, res, next) {
     }
   }, null, null, [[1, 7]]);
 });
-router.get('/onroad/:name', function _callee9(req, res, next) {
-  var name;
+router.post('/path', function _callee9(req, res) {
+  var src, dest, pathC;
   return regeneratorRuntime.async(function _callee9$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
         case 0:
-          name = req.params.name;
+          console.log(req.body);
           _context9.prev = 1;
-          _context9.next = 4;
-          return regeneratorRuntime.awrap(onroadPublisher(name));
-
-        case 4:
-          res.send('onroad');
-          _context9.next = 10;
-          break;
+          src = req.body.source;
+          dest = req.body.destination;
+          console.log(src, dest);
+          _context9.next = 7;
+          return regeneratorRuntime.awrap(path(src, dest));
 
         case 7:
-          _context9.prev = 7;
-          _context9.t0 = _context9["catch"](1);
-          next(_context9.t0);
+          pathC = _context9.sent;
+          res.status(200).json(pathC);
+          _context9.next = 14;
+          break;
 
-        case 10:
+        case 11:
+          _context9.prev = 11;
+          _context9.t0 = _context9["catch"](1);
+          console.log(_context9.t0);
+
+        case 14:
         case "end":
           return _context9.stop();
       }
     }
-  }, null, null, [[1, 7]]);
+  }, null, null, [[1, 11]]);
 });
-router.get('/delivered/:name', function _callee10(req, res, next) {
+router.get('/onroad/:name', function _callee10(req, res, next) {
   var name;
   return regeneratorRuntime.async(function _callee10$(_context10) {
     while (1) {
@@ -326,10 +319,10 @@ router.get('/delivered/:name', function _callee10(req, res, next) {
           name = req.params.name;
           _context10.prev = 1;
           _context10.next = 4;
-          return regeneratorRuntime.awrap(deliveredPublisher(name));
+          return regeneratorRuntime.awrap(onroadPublisher(name));
 
         case 4:
-          res.send('delivered');
+          res.send('onroad');
           _context10.next = 10;
           break;
 
@@ -344,5 +337,69 @@ router.get('/delivered/:name', function _callee10(req, res, next) {
       }
     }
   }, null, null, [[1, 7]]);
+});
+router.get('/delivered/:name', function _callee11(req, res, next) {
+  var name;
+  return regeneratorRuntime.async(function _callee11$(_context11) {
+    while (1) {
+      switch (_context11.prev = _context11.next) {
+        case 0:
+          name = req.params.name;
+          _context11.prev = 1;
+          _context11.next = 4;
+          return regeneratorRuntime.awrap(deliveredPublisher(name));
+
+        case 4:
+          res.send('delivered');
+          _context11.next = 10;
+          break;
+
+        case 7:
+          _context11.prev = 7;
+          _context11.t0 = _context11["catch"](1);
+          next(_context11.t0);
+
+        case 10:
+        case "end":
+          return _context11.stop();
+      }
+    }
+  }, null, null, [[1, 7]]);
+});
+router.post('/onroad-stream', function _callee12(req, res, next) {
+  var data, message;
+  return regeneratorRuntime.async(function _callee12$(_context12) {
+    while (1) {
+      switch (_context12.prev = _context12.next) {
+        case 0:
+          _context12.prev = 0;
+          data = req.body;
+          message = {
+            deliveryId: data.deliveryId,
+            userId: data.userId,
+            orderId: data.orderId,
+            pickupLocation: data.pickupLocation,
+            currentLocation: data.currentLocation,
+            status: 'onroad'
+          };
+          _context12.next = 5;
+          return regeneratorRuntime.awrap(onroadPublisher(message));
+
+        case 5:
+          res.send('onroad');
+          _context12.next = 11;
+          break;
+
+        case 8:
+          _context12.prev = 8;
+          _context12.t0 = _context12["catch"](0);
+          next(_context12.t0);
+
+        case 11:
+        case "end":
+          return _context12.stop();
+      }
+    }
+  }, null, null, [[0, 8]]);
 });
 module.exports = router;

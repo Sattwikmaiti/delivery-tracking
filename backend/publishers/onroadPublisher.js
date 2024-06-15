@@ -9,9 +9,12 @@ const onroadPublisher = async (data) => {
     const channel = await connection.createChannel();
 
     await channel.assertExchange('parcel-tracking', 'topic', { durable: false });
-    const message = { deliveryId:data.deliveryId,userId:data.userId,orderId:data.orderId,pickupLocation:data.pickupLocation,currentLocation:data.currentLocation, status: 'onroad' };
-    channel.publish('parcel-tracking', 'parcel.onroad', Buffer.from(JSON.stringify(message)));
-
+    if(data.currentLocation.stateCapital)
+     { 
+      const message = { deliveryId:data.deliveryId,userId:data.userId,orderId:data.orderId,pickupLocation:data.pickupLocation,currentLocation:data.currentLocation, status: 'onroad' };
+      console.log("mess",message)
+     channel.publish('parcel-tracking', 'parcel.onroad', Buffer.from(JSON.stringify(message)));
+     }
     await channel.close();
     await connection.close();
     return Promise.resolve();

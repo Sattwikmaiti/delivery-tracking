@@ -6,17 +6,11 @@ const logSchema = new Schema({
   deliveryId: String,
   currentLocation: {
     stateCapital: String,
-    coordinates: {
-      latitude: Number,
-      longitude: Number
-    }
+  
   },
   pickupLocation: {
     stateCapital: String,
-    coordinates: {
-      latitude: Number,
-      longitude: Number
-    }
+    
   },
   timestamp: {
     type: Date,

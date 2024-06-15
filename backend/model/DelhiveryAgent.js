@@ -6,10 +6,7 @@ const deliveryAgentSchema = new Schema({
   deliveryId: {type:String,default:""},
   operatingLocation: {
     location: String,
-    coordinates: {
-      latitude: Number,
-      longitude: Number
-    }
+   
   },
   status: {
     type: String,

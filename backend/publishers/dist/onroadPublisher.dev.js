@@ -29,36 +29,40 @@ var onroadPublisher = function onroadPublisher(data) {
           }));
 
         case 9:
-          message = {
-            deliveryId: data.deliveryId,
-            userId: data.userId,
-            orderId: data.orderId,
-            pickupLocation: data.pickupLocation,
-            currentLocation: data.currentLocation,
-            status: 'onroad'
-          };
-          channel.publish('parcel-tracking', 'parcel.onroad', Buffer.from(JSON.stringify(message)));
-          _context.next = 13;
+          if (data.currentLocation.stateCapital) {
+            message = {
+              deliveryId: data.deliveryId,
+              userId: data.userId,
+              orderId: data.orderId,
+              pickupLocation: data.pickupLocation,
+              currentLocation: data.currentLocation,
+              status: 'onroad'
+            };
+            console.log("mess", message);
+            channel.publish('parcel-tracking', 'parcel.onroad', Buffer.from(JSON.stringify(message)));
+          }
+
+          _context.next = 12;
           return regeneratorRuntime.awrap(channel.close());
 
-        case 13:
-          _context.next = 15;
+        case 12:
+          _context.next = 14;
           return regeneratorRuntime.awrap(connection.close());
 
-        case 15:
+        case 14:
           return _context.abrupt("return", Promise.resolve());
 
-        case 18:
-          _context.prev = 18;
+        case 17:
+          _context.prev = 17;
           _context.t0 = _context["catch"](0);
           return _context.abrupt("return", Promise.reject(_context.t0));
 
-        case 21:
+        case 20:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 18]]);
+  }, null, null, [[0, 17]]);
 };
 
 module.exports = onroadPublisher;

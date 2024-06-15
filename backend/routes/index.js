@@ -2,7 +2,7 @@ const { Router } = require('express');
 const shippingPublisher = require('../publishers/shippingPublisher');
 const onroadPublisher = require('../publishers/onroadPublisher');
 const deliveredPublisher = require('../publishers/deliveredPublisher');
-
+const path=require('../publishers/path.js')
 const router = Router();
 
 const Delhivery=require('../model/Delhivery')
@@ -24,10 +24,10 @@ router.post('/order',async (req,res)=>{
         orderId:req.body.orderId,
         pickupLocation:{
             location:req.body.pickupLocation.location,
-            coordinates: {
-                latitude:req.body.pickupLocation.coordinates.lat,
-                longitude:req.body.pickupLocation.coordinates.long
-              }
+            
+        },
+        currentLocation:{
+          stateCapital:req.body.currentLocation.stateCapital
         }
     })
 
@@ -51,10 +51,7 @@ router.post('/addAgent',async (req,res)=>{
        
         operatingLocation:{
             location:req.body.location,
-            coordinates: {
-                latitude:req.body.lat,
-                longitude:req.body.long
-              }
+          
         }
     })
 
@@ -107,17 +104,11 @@ router.post('/log', async (req, res) => {
       deliveryId,//same as given in Delhivery.js
       currentLocation: {
         stateCapital: currentLocation.stateCapital,
-        coordinates: {
-          latitude: currentLocation.coordinates.lat,
-          longitude: currentLocation.coordinates.long
-        }
+       
       },
       pickupLocation: {
        location: pickupLocation.location,
-        coordinates: {
-          latitude: pickupLocation.coordinates.lat,
-          longitude: pickupLocation.coordinates.long
-        }
+        
       }
     });
 
@@ -150,6 +141,22 @@ router.get('/shipping/:name', async (req, res, next) => {
   }
 });
 
+
+router.post('/path',async(req,res)=>{
+  console.log(req.body)
+   try{
+    const src=req.body.source;
+    const dest=req.body.destination
+    console.log(src,dest)
+     const pathC=await path(src,dest);
+     res.status(200).json(pathC);
+   }
+   catch(err)
+   {
+    console.log(err)
+   }
+})
+
 router.get('/onroad/:name', async (req, res, next) => {
   const name = req.params.name;
   try {
@@ -169,5 +176,26 @@ router.get('/delivered/:name', async (req, res, next) => {
     next(error);
   }
 });
+
+
+
+router.post('/onroad-stream',async(req,res,next)=>{
+
+  try{
+   
+
+    const data=req.body
+    const message = { deliveryId:data.deliveryId,userId:data.userId,orderId:data.orderId,pickupLocation:data.pickupLocation,currentLocation:data.currentLocation, status: 'onroad' };
+   await onroadPublisher(message);
+   res.send('onroad');
+
+
+  }catch(err)
+  {
+    next(err)
+
+  }
+
+})
 
 module.exports = router;

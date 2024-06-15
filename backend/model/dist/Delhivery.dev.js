@@ -16,26 +16,12 @@ var deliverySchema = new Schema({
     "default": 'pending'
   },
   pickupLocation: {
-    location: String,
-    coordinates: {
-      latitude: String,
-      longitude: String
-    }
+    location: String
   },
   currentLocation: {
     stateCapital: {
       type: String,
       "default": ''
-    },
-    coordinates: {
-      latitude: {
-        type: String,
-        "default": ''
-      },
-      longitude: {
-        type: String,
-        "default": ''
-      }
     }
   }
 });

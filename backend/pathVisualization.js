@@ -1,7 +1,5 @@
 // Fetch the preprocessed graph data pickuplocation = Lucknow , current=Mumbai
 // import fs from 'fs'
-const fs = require('fs');
-const fetch = require('node-fetch');
 
 const source = "Mumbai";
 const destination = "Kolkata";
@@ -10,7 +8,9 @@ fetch("graphData.json")
   .then((response) => response.json())
   .then((data) => {
     const graph = data.graph;
-    const cityIndex = data.cityIndex;
+
+    console.log(graph)
+  
 
     // Read the JSON file (this is now embedded)
     const mapping = {};
@@ -107,16 +107,6 @@ fetch("graphData.json")
         const path = getPath(source, destination, predecessors);
         const coordinates = path.map(city => [mapping[city].lat, mapping[city].long]);
 
-        // Write the coordinates to a file
-        fs.writeFile('coordinates.json', JSON.stringify(coordinates, null, 2), (err) => {
-          if (err) {
-            console.error('Error writing coordinates to file:', err);
-          } else {
-            console.log('Coordinates saved to coordinates.json');
-          }
-        });
-
-        // No need for map initialization and plotting since it's not used in this script
       });
   });
 

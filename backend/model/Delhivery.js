@@ -12,18 +12,9 @@ const deliverySchema = new Schema({
   },
   pickupLocation: {
     location: String,
-    coordinates: {
-      latitude: String,
-      longitude: String
-    }
   },
   currentLocation: {
-    stateCapital:  { type: String, default: '' },
-    coordinates: {
-      latitude: { type: String, default: '' },
-      longitude: { type: String, default: '' }
-    },
-   
+    stateCapital:  { type: String, default: '' },   
   },
 });
 
