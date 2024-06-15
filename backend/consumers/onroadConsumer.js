@@ -24,15 +24,20 @@ db.once('open', () => console.log('Connected to database'));
     const q = await channel.assertQueue('', { durable: false });
     channel.bindQueue(q.queue, 'parcel-tracking', '*.onroad');
 
+
     channel.prefetch(1);
 
+   
     channel.consume(q.queue, async (msg) => {
+      
+      
       if (msg !== null) {
         const messageContent = JSON.parse(msg.content.toString());
 
         try {
          
-          const onroadParcel = await Delhivery.updateOne(
+          channel.ack(msg);
+          await Delhivery.updateOne(
             { deliveryId: messageContent.deliveryId },
             { 
               $set: { 
@@ -42,8 +47,8 @@ db.once('open', () => console.log('Connected to database'));
             }
           );
 
-          console.log('parcel is on road:', onroadParcel);
-          channel.ack(msg);
+          // console.log('parcel is on road:', onroadParcel);
+          
         } catch (err) {
           console.error('Error updating parcel status:', err);
           channel.nack(msg);

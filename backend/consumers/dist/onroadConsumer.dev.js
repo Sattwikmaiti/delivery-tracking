@@ -54,19 +54,20 @@ db.once('open', function () {
           channel.bindQueue(q.queue, 'parcel-tracking', '*.onroad');
           channel.prefetch(1);
           channel.consume(q.queue, function _callee(msg) {
-            var messageContent, onroadParcel;
+            var messageContent;
             return regeneratorRuntime.async(function _callee$(_context) {
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
                     if (!(msg !== null)) {
-                      _context.next = 14;
+                      _context.next = 12;
                       break;
                     }
 
                     messageContent = JSON.parse(msg.content.toString());
                     _context.prev = 2;
-                    _context.next = 5;
+                    channel.ack(msg);
+                    _context.next = 6;
                     return regeneratorRuntime.awrap(Delhivery.updateOne({
                       deliveryId: messageContent.deliveryId
                     }, {
@@ -76,25 +77,22 @@ db.once('open', function () {
                       }
                     }));
 
-                  case 5:
-                    onroadParcel = _context.sent;
-                    console.log('parcel is on road:', onroadParcel);
-                    channel.ack(msg);
-                    _context.next = 14;
+                  case 6:
+                    _context.next = 12;
                     break;
 
-                  case 10:
-                    _context.prev = 10;
+                  case 8:
+                    _context.prev = 8;
                     _context.t0 = _context["catch"](2);
                     console.error('Error updating parcel status:', _context.t0);
                     channel.nack(msg);
 
-                  case 14:
+                  case 12:
                   case "end":
                     return _context.stop();
                 }
               }
-            }, null, null, [[2, 10]]);
+            }, null, null, [[2, 8]]);
           }, {
             noAck: false
           });

@@ -367,7 +367,7 @@ router.get('/delivered/:name', function _callee11(req, res, next) {
   }, null, null, [[1, 7]]);
 });
 router.post('/onroad-stream', function _callee12(req, res, next) {
-  var data, message;
+  var data, message, messageShip;
   return regeneratorRuntime.async(function _callee12$(_context12) {
     while (1) {
       switch (_context12.prev = _context12.next) {
@@ -386,20 +386,37 @@ router.post('/onroad-stream', function _callee12(req, res, next) {
           return regeneratorRuntime.awrap(onroadPublisher(message));
 
         case 5:
+          if (!(message.pickupLocation.location === message.currentLocation.stateCapital)) {
+            _context12.next = 9;
+            break;
+          }
+
+          messageShip = {
+            deliveryId: data.deliveryId,
+            userId: data.userId,
+            orderId: data.orderId,
+            pickupLocation: data.pickupLocation,
+            currentLocation: data.currentLocation,
+            status: 'delivered'
+          };
+          _context12.next = 9;
+          return regeneratorRuntime.awrap(deliveredPublisher(messageShip));
+
+        case 9:
           res.send('onroad');
-          _context12.next = 11;
+          _context12.next = 15;
           break;
 
-        case 8:
-          _context12.prev = 8;
+        case 12:
+          _context12.prev = 12;
           _context12.t0 = _context12["catch"](0);
           next(_context12.t0);
 
-        case 11:
+        case 15:
         case "end":
           return _context12.stop();
       }
     }
-  }, null, null, [[0, 8]]);
+  }, null, null, [[0, 12]]);
 });
 module.exports = router;

@@ -185,8 +185,19 @@ router.post('/onroad-stream',async(req,res,next)=>{
    
 
     const data=req.body
+    
     const message = { deliveryId:data.deliveryId,userId:data.userId,orderId:data.orderId,pickupLocation:data.pickupLocation,currentLocation:data.currentLocation, status: 'onroad' };
    await onroadPublisher(message);
+    
+   if(message.pickupLocation.location===message.currentLocation.stateCapital)
+       {
+         
+    const messageShip = { deliveryId:data.deliveryId,userId:data.userId,orderId:data.orderId,pickupLocation:data.pickupLocation,currentLocation:data.currentLocation, status: 'delivered' };
+    
+        await deliveredPublisher(messageShip)
+      
+      }
+
    res.send('onroad');
 
 

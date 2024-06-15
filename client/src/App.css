@@ -49,5 +49,30 @@
 .together{
   display: flex;
   flex-direction: row;
-  gap:10rem
+  gap:20rem;
+  background-color:#282c34
+}
+
+.parcels{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items:center;
+
+ 
+
+}
+
+
+
+#id{
+  color:#787e8a;
+
+}
+#id>div{
+  width:300px;
+  padding:1rem;
+  font-weight: 500;
+  background-color:#33373e;
+  margin:0.5rem
 }
