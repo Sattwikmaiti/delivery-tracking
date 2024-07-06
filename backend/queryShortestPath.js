@@ -113,7 +113,7 @@ function getPath(startNode, endNode, predecessors) {
 
 // Example usage
 const source = "Delhi";
-const destination = "Bangalore";
+const destination = "Mumbai";
 const { distances, predecessors } = dijkstra(graph, source);
 
 // Display the shortest path

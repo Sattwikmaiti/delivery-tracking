@@ -1,0 +1,40 @@
+1)delete deliveries from mongodb . 
+
+2)Go to App.js in client .change the delivery id in two place
+
+  -- 1 await axios.post(`http://localhost:8000/sendmail/sattwik-del-251 (here )`);
+   -- 2   console.log(`Publishing : ${city[currentPositionIndex]}`)
+            await axios.post("http://localhost:8000/onroad-stream", {
+            userId: "Sattwik",
+            agentId: "Raju",
+            orderId: "Sattwik-order-1",
+            deliveryId: "sattwik-del-251",(here)
+            pickupLocation: {
+              location: "Mumbai"
+            },
+            currentLocation: {
+              stateCapital: city[currentPositionIndex]
+            }
+          });
+
+
+
+
+3)npm run dev , npm start for backend.
+4)change the deliveryId-with arbitary
+post  http://localhost:8000/order
+{
+  "userId":"Sattwik",
+  "agentId":"Raju",
+  "orderId":"Sattwik-order-1",
+  "deliveryId":"sattwik-del-251",
+  "pickupLocation":{
+    "location":"Mumbai"
+    },
+    "currentLocation":{
+    "stateCapital":"Delhi"
+    }
+}
+
+
+5 )   for frontend npm start
