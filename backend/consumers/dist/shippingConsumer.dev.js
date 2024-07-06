@@ -11,7 +11,9 @@ var amqplib = require('amqplib');
 var Delhivery = require('../model/Delhivery');
 
 dotenv.config();
-mongoose.connect(process.env.MONGODB_URL, {
+AMQP_SERVER = "amqps://lmfgllcl:38RrOms-LLrn6HMUwLJL6OSD8MBzsuFH@woodpecker.rmq.cloudamqp.com/lmfgllcl";
+MONGODB_URL = "mongodb+srv://maitisattwik:jyuthu@cluster0.nbvfpuj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+mongoose.connect(MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -29,7 +31,7 @@ db.once('open', function () {
         case 0:
           _context2.prev = 0;
           _context2.next = 3;
-          return regeneratorRuntime.awrap(amqplib.connect(process.env.AMQP_SERVER));
+          return regeneratorRuntime.awrap(amqplib.connect(AMQP_SERVER));
 
         case 3:
           connection = _context2.sent;
@@ -59,26 +61,42 @@ db.once('open', function () {
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
-                    if (msg !== null) {
-                      messageContent = JSON.parse(msg.content.toString());
-
-                      try {
-                        // const newParcel = new Delhivery(messageContent);
-                        // const savedParcel = await newParcel.save();
-                        // console.log('shipped parcel:', savedParcel);
-                        channel.ack(msg);
-                      } catch (err) {
-                        console.error('Error saving parcel:', err);
-                        channel.nack(msg);
-                      }
+                    if (!(msg !== null)) {
+                      _context.next = 14;
+                      break;
                     }
 
-                  case 1:
+                    messageContent = JSON.parse(msg.content.toString());
+                    console.log(messageContent);
+                    _context.prev = 3;
+                    _context.next = 6;
+                    return regeneratorRuntime.awrap(Delhivery.updateOne({
+                      deliveryId: messageContent.deliveryId
+                    }, {
+                      $set: {
+                        currentLocation: messageContent.currentLocation,
+                        status: messageContent.status
+                      }
+                    }));
+
+                  case 6:
+                    channel.ack(msg);
+                    console.log("ackedd");
+                    _context.next = 14;
+                    break;
+
+                  case 10:
+                    _context.prev = 10;
+                    _context.t0 = _context["catch"](3);
+                    console.error('Error saving parcel:', _context.t0);
+                    channel.nack(msg);
+
+                  case 14:
                   case "end":
                     return _context.stop();
                 }
               }
-            });
+            }, null, null, [[3, 10]]);
           }, {
             noAck: false
           });

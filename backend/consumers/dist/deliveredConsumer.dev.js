@@ -12,7 +12,9 @@ var amqplib = require("amqplib");
 var Delhivery = require('../model/Delhivery');
 
 dotenv.config();
-mongoose.connect(process.env.MONGODB_URL, {
+AMQP_SERVER = "amqps://lmfgllcl:38RrOms-LLrn6HMUwLJL6OSD8MBzsuFH@woodpecker.rmq.cloudamqp.com/lmfgllcl";
+MONGODB_URL = "mongodb+srv://maitisattwik:jyuthu@cluster0.nbvfpuj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+mongoose.connect(MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -30,7 +32,7 @@ db.once("open", function () {
         case 0:
           _context2.prev = 0;
           _context2.next = 3;
-          return regeneratorRuntime.awrap(amqplib.connect(process.env.AMQP_SERVER));
+          return regeneratorRuntime.awrap(amqplib.connect(AMQP_SERVER));
 
         case 3:
           connection = _context2.sent;

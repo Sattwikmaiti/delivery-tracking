@@ -45,7 +45,6 @@ router.post('/order', function _callee2(req, res) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          console.log(req.body);
           newDelhivery = new Delhivery({
             deliveryId: req.body.deliveryId,
             userId: req.body.userId,
@@ -57,13 +56,17 @@ router.post('/order', function _callee2(req, res) {
               stateCapital: req.body.currentLocation.stateCapital
             }
           });
-          _context2.next = 4;
+          _context2.next = 3;
           return regeneratorRuntime.awrap(newDelhivery.save());
 
-        case 4:
-          res.status(200).json(newDelhivery);
+        case 3:
+          _context2.next = 5;
+          return regeneratorRuntime.awrap(shippingPublisher(req.body));
 
         case 5:
+          res.status(200).json(newDelhivery);
+
+        case 6:
         case "end":
           return _context2.stop();
       }
@@ -96,20 +99,19 @@ router.post('/addAgent', function _callee4(req, res) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
-          console.log(req.body);
           newDelhivery = new DelhiveryAgent({
             agentId: req.body.agentId,
             operatingLocation: {
               location: req.body.location
             }
           });
-          _context4.next = 4;
+          _context4.next = 3;
           return regeneratorRuntime.awrap(newDelhivery.save());
 
-        case 4:
+        case 3:
           res.status(200).json(newDelhivery);
 
-        case 5:
+        case 4:
         case "end":
           return _context4.stop();
       }
@@ -481,8 +483,7 @@ router.get('/delivered-stream/:id', function _callee14(req, res, next) {
     while (1) {
       switch (_context15.prev = _context15.next) {
         case 0:
-          console.log("id", req.params.id);
-          _context15.prev = 1;
+          _context15.prev = 0;
           // const data=req.body
           message = {
             userId: "Sattwik",
@@ -498,24 +499,24 @@ router.get('/delivered-stream/:id', function _callee14(req, res, next) {
             status: 'delivered'
           }; // const messageShip = { deliveryId:data.deliveryId,userId:data.userId,orderId:data.orderId,pickupLocation:data.pickupLocation,currentLocation:data.currentLocation, status: 'delivered' };
 
-          _context15.next = 5;
+          _context15.next = 4;
           return regeneratorRuntime.awrap(deliveredPublisher(message));
 
-        case 5:
+        case 4:
           res.send('delivered');
-          _context15.next = 11;
+          _context15.next = 10;
           break;
 
-        case 8:
-          _context15.prev = 8;
-          _context15.t0 = _context15["catch"](1);
+        case 7:
+          _context15.prev = 7;
+          _context15.t0 = _context15["catch"](0);
           next(_context15.t0);
 
-        case 11:
+        case 10:
         case "end":
           return _context15.stop();
       }
     }
-  }, null, null, [[1, 8]]);
+  }, null, null, [[0, 7]]);
 });
 module.exports = router;

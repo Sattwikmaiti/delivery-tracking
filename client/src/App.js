@@ -51,6 +51,7 @@ function App() {
   };
 
   useEffect(() => {
+    
     socket.on("parcel", (data) => setParcel(data[data.length-1]));
     getPathFromEndpoint();
   }, []);
@@ -77,7 +78,7 @@ function App() {
             userId: "Sattwik",
             agentId: "Raju",
             orderId: "Sattwik-order-1",
-            deliveryId: "sattwik-del-3091",
+            deliveryId: "sattwik-del-251",
             pickupLocation: {
               location: "Mumbai"
             },
@@ -91,7 +92,7 @@ function App() {
           if(city[currentPositionIndex]==="Mumbai")
             {
               
-              await axios.post(`http://localhost:8000/sendmail/sattwik-del-3091`);
+              await axios.post(`http://localhost:8000/sendmail/sattwik-del-251`);
             }
           console.log(`Published : ${city[currentPositionIndex]}`)
           console.log("city", city[currentPositionIndex]);}

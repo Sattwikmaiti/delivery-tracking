@@ -8,9 +8,9 @@ const Delhivery=require('../model/Delhivery')
 
 dotenv.config();
 
-const port = process.env.WS_PORT || 8001;
-
-mongoose.connect(process.env.MONGODB_URL, {
+const port = process.env.WS_PORT || 2500;
+MONGODB_URL = "mongodb+srv://maitisattwik:jyuthu@cluster0.nbvfpuj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+mongoose.connect(MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -34,6 +34,8 @@ let interval;
 
 const findParcel = async (socket) => {
   try {
+
+    
     const parcels = await Delhivery.find();
     
 

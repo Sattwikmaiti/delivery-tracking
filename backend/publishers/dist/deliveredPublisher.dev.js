@@ -5,6 +5,7 @@ var dotenv = require('dotenv');
 var amqplib = require('amqplib');
 
 dotenv.config();
+AMQP_SERVER = "amqps://lmfgllcl:38RrOms-LLrn6HMUwLJL6OSD8MBzsuFH@woodpecker.rmq.cloudamqp.com/lmfgllcl";
 
 var deliveredPublisher = function deliveredPublisher(data) {
   var connection, channel, message;
@@ -14,7 +15,7 @@ var deliveredPublisher = function deliveredPublisher(data) {
         case 0:
           _context.prev = 0;
           _context.next = 3;
-          return regeneratorRuntime.awrap(amqplib.connect(process.env.AMQP_SERVER));
+          return regeneratorRuntime.awrap(amqplib.connect(AMQP_SERVER));
 
         case 3:
           connection = _context.sent;
@@ -38,27 +39,28 @@ var deliveredPublisher = function deliveredPublisher(data) {
             status: 'delivered'
           };
           channel.publish('parcel-tracking', 'parcel.delivered', Buffer.from(JSON.stringify(message)));
-          _context.next = 13;
+          console.log("delivered");
+          _context.next = 14;
           return regeneratorRuntime.awrap(channel.close());
 
-        case 13:
-          _context.next = 15;
+        case 14:
+          _context.next = 16;
           return regeneratorRuntime.awrap(connection.close());
 
-        case 15:
+        case 16:
           return _context.abrupt("return", Promise.resolve());
 
-        case 18:
-          _context.prev = 18;
+        case 19:
+          _context.prev = 19;
           _context.t0 = _context["catch"](0);
           return _context.abrupt("return", Promise.reject(_context.t0));
 
-        case 21:
+        case 22:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 18]]);
+  }, null, null, [[0, 19]]);
 };
 
 module.exports = deliveredPublisher;

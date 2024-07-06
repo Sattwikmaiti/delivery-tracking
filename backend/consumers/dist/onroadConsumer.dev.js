@@ -11,7 +11,9 @@ var amqplib = require('amqplib');
 var Delhivery = require('../model/Delhivery');
 
 dotenv.config();
-mongoose.connect(process.env.MONGODB_URL, {
+AMQP_SERVER = "amqps://lmfgllcl:38RrOms-LLrn6HMUwLJL6OSD8MBzsuFH@woodpecker.rmq.cloudamqp.com/lmfgllcl";
+MONGODB_URL = "mongodb+srv://maitisattwik:jyuthu@cluster0.nbvfpuj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+mongoose.connect(MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -29,7 +31,7 @@ db.once('open', function () {
         case 0:
           _context2.prev = 0;
           _context2.next = 3;
-          return regeneratorRuntime.awrap(amqplib.connect(process.env.AMQP_SERVER));
+          return regeneratorRuntime.awrap(amqplib.connect(AMQP_SERVER));
 
         case 3:
           connection = _context2.sent;
@@ -59,15 +61,18 @@ db.once('open', function () {
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
+                    console.log("Conusmingggg");
+
                     if (!(msg !== null)) {
-                      _context.next = 12;
+                      _context.next = 14;
                       break;
                     }
 
                     messageContent = JSON.parse(msg.content.toString());
-                    _context.prev = 2;
+                    console.log(messageContent);
+                    _context.prev = 4;
                     channel.ack(msg);
-                    _context.next = 6;
+                    _context.next = 8;
                     return regeneratorRuntime.awrap(Delhivery.updateOne({
                       deliveryId: messageContent.deliveryId
                     }, {
@@ -77,22 +82,22 @@ db.once('open', function () {
                       }
                     }));
 
-                  case 6:
-                    _context.next = 12;
+                  case 8:
+                    _context.next = 14;
                     break;
 
-                  case 8:
-                    _context.prev = 8;
-                    _context.t0 = _context["catch"](2);
+                  case 10:
+                    _context.prev = 10;
+                    _context.t0 = _context["catch"](4);
                     console.error('Error updating parcel status:', _context.t0);
                     channel.nack(msg);
 
-                  case 12:
+                  case 14:
                   case "end":
                     return _context.stop();
                 }
               }
-            }, null, null, [[2, 8]]);
+            }, null, null, [[4, 10]]);
           }, {
             noAck: false
           });

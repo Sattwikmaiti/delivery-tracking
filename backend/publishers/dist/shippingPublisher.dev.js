@@ -5,6 +5,7 @@ var dotenv = require('dotenv');
 var amqplib = require('amqplib');
 
 dotenv.config();
+AMQP_SERVER = "amqps://lmfgllcl:38RrOms-LLrn6HMUwLJL6OSD8MBzsuFH@woodpecker.rmq.cloudamqp.com/lmfgllcl";
 
 var shippingPublisher = function shippingPublisher(data) {
   var connection, channel, message;
@@ -12,23 +13,25 @@ var shippingPublisher = function shippingPublisher(data) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _context.prev = 0;
-          _context.next = 3;
-          return regeneratorRuntime.awrap(amqplib.connect(process.env.AMQP_SERVER));
+          console.log("try sipping");
+          _context.prev = 1;
+          _context.next = 4;
+          return regeneratorRuntime.awrap(amqplib.connect(AMQP_SERVER));
 
-        case 3:
+        case 4:
           connection = _context.sent;
-          _context.next = 6;
+          _context.next = 7;
           return regeneratorRuntime.awrap(connection.createChannel());
 
-        case 6:
+        case 7:
           channel = _context.sent;
-          _context.next = 9;
+          console.log("sipping created");
+          _context.next = 11;
           return regeneratorRuntime.awrap(channel.assertExchange('parcel-tracking', 'topic', {
             durable: false
           }));
 
-        case 9:
+        case 11:
           message = {
             deliveryId: data.deliveryId,
             userId: data.userId,
@@ -38,27 +41,28 @@ var shippingPublisher = function shippingPublisher(data) {
             status: 'shipping'
           };
           channel.publish('parcel-tracking', 'parcel.shipping', Buffer.from(JSON.stringify(message)));
-          _context.next = 13;
+          console.log("published");
+          _context.next = 16;
           return regeneratorRuntime.awrap(channel.close());
 
-        case 13:
-          _context.next = 15;
+        case 16:
+          _context.next = 18;
           return regeneratorRuntime.awrap(connection.close());
 
-        case 15:
+        case 18:
           return _context.abrupt("return", Promise.resolve());
 
-        case 18:
-          _context.prev = 18;
-          _context.t0 = _context["catch"](0);
+        case 21:
+          _context.prev = 21;
+          _context.t0 = _context["catch"](1);
           return _context.abrupt("return", Promise.reject(_context.t0));
 
-        case 21:
+        case 24:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 18]]);
+  }, null, null, [[1, 21]]);
 };
 
 module.exports = shippingPublisher;

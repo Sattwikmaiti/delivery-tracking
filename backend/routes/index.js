@@ -18,7 +18,7 @@ router.get('/orders',async (req,res)=>{
 
 router.post('/order',async (req,res)=>{
  
-  console.log(req.body)
+  
     const newDelhivery=new Delhivery({
       deliveryId:req.body.deliveryId,
         userId:req.body.userId,
@@ -33,6 +33,7 @@ router.post('/order',async (req,res)=>{
     })
 
     await newDelhivery.save();
+    await shippingPublisher(req.body);
 
     res.status(200).json(newDelhivery)
 })
@@ -46,7 +47,7 @@ router.get('/allAgents',async (req,res)=>{
 
 
 router.post('/addAgent',async (req,res)=>{
-  console.log(req.body)
+
     const newDelhivery=new DelhiveryAgent({
         agentId:req.body.agentId,
        
@@ -246,7 +247,6 @@ router.post('/sendmail/:id',async(req,res)=>{
 
 router.get('/delivered-stream/:id',async(req,res,next)=>{
 
-  console.log("id",req.params.id)
   try{
    
 
